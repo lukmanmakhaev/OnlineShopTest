@@ -10,24 +10,38 @@ import SwiftUI
 
 class SignInViewPageModel: ObservableObject {
     
+    @StateObject var users = Users()
+    
+
     @Published var firstName: String = ""
     @Published var lastName: String = ""
     @Published var isDisabled: Bool = true
     @Published var email: String = "" {
         didSet {
             if self.email.isEmpty {
-                self.emailError = "Required"
+                self.emailError = "Email required"
                 self.isDisabled = true
             } else if !self.email.isValidEmail {
                 self.emailError = "Invalid email"
                 self.isDisabled = true
-            } else  {
+            } else if isExisting(value: email, in: users.users)! {
+                self.emailError = "This email is already registered"
+                self.isDisabled = true
+            } else {
                 self.emailError = ""
                 self.isDisabled = false
             }
         }
     }
-    @Published var emailError: String = ""
+    var emailError: String = ""
     
-    
+    func isExisting(value searchValue: String, in array: [User]) -> Bool? {
+        for (_, value) in array.enumerated() {
+            if value.email == searchValue {
+                return true
+            }
+        }
+     
+        return false
+    }
 }

@@ -27,81 +27,83 @@ struct HomePageView: View {
                     
                     CategoriesView()
                     
-                    // Latest
                     VStack {
-                        HStack {
-                            Text("Latest")
-                                .font(.custom("Montserrat-SemiBold", size: 24))
+                        // Latest
+                        VStack {
+                            HStack {
+                                Text("Latest")
+                                    .font(.custom("Montserrat-SemiBold", size: 24))
 
-                            Spacer()
-                            
-                            Button(action: {
+                                Spacer()
                                 
-                            }, label: {
-                                Text("View all")
-                                    .font(.custom("Montserrat-SemiBold", size: 13))
-                                    .foregroundColor(.gray)
-                            })
-                        }
-                        .padding(.horizontal)
-                    .padding(.top, 25)
-                        
-                        ScrollView (.horizontal, showsIndicators: false) {
-                            HStack {
-                                
-                                ForEach(0 ..< $viewModel.latestProducts.count, id: \.self) { i in
-                                    LatestItem(category: $viewModel.latestProducts[i].category, name: $viewModel.latestProducts[i].name, price: $viewModel.latestProducts[i].price, urlString: $viewModel.latestProducts[i].image_url)
-                                }
+                                Button(action: {
+                                    
+                                }, label: {
+                                    Text("View all")
+                                        .font(.custom("Montserrat-SemiBold", size: 13))
+                                        .foregroundColor(.gray)
+                                })
                             }
-                            .padding(.leading)
-                            .padding(.trailing)
-                        }
-                    }
-                    
-                    //Flash Sale
-                    VStack {
-                        HStack {
-                            Text("Flash Sale")
-                                .font(.custom("Montserrat-SemiBold", size: 24))
+                            .padding(.horizontal)
+                        .padding(.top, 25)
                             
-                            Spacer()
-                            
-                            Button(action: {
-                                
-                            }, label: {
-                                Text("View all")
-                                    .font(.custom("Montserrat-SemiBold", size: 13))
-                                    .foregroundColor(.gray)
-                            })
-                        }
-                        .padding(.horizontal)
-                        .padding(.top, 13)
-                        
-                        ScrollView (.horizontal, showsIndicators: false) {
-                            
-                            HStack {
-                                
-                                ForEach(0 ..< $viewModel.flashSaleProducts.count, id: \.self) { i in
-                                    FlashSaleItem(category: $viewModel.flashSaleProducts[i].category,
-                                                  name: $viewModel.flashSaleProducts[i].name,
-                                                  discount: $viewModel.flashSaleProducts[i].discount,
-                                                  price: $viewModel.flashSaleProducts[i].price, urlString: $viewModel.flashSaleProducts[i].image_url)
+                            ScrollView (.horizontal, showsIndicators: false) {
+                                HStack {
+                                    
+                                    ForEach(0 ..< $viewModel.latestProducts.count, id: \.self) { i in
+                                        LatestItem(category: $viewModel.latestProducts[i].category, name: $viewModel.latestProducts[i].name, price: $viewModel.latestProducts[i].price, urlString: $viewModel.latestProducts[i].image_url)
+                                    }
                                 }
-                            
+                                .padding(.leading)
+                                .padding(.trailing)
                             }
-                            .padding(.leading)
-                            .padding(.trailing)
-                            //ZStack
                         }
+                        
+                        //Flash Sale
+                        VStack {
+                            HStack {
+                                Text("Flash Sale")
+                                    .font(.custom("Montserrat-SemiBold", size: 24))
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    
+                                }, label: {
+                                    Text("View all")
+                                        .font(.custom("Montserrat-SemiBold", size: 13))
+                                        .foregroundColor(.gray)
+                                })
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 13)
+                            
+                            ScrollView (.horizontal, showsIndicators: false) {
+                                
+                                HStack {
+                                    
+                                    ForEach(0 ..< $viewModel.flashSaleProducts.count, id: \.self) { i in
+                                        FlashSaleItem(category: $viewModel.flashSaleProducts[i].category,
+                                                      name: $viewModel.flashSaleProducts[i].name,
+                                                      discount: $viewModel.flashSaleProducts[i].discount,
+                                                      price: $viewModel.flashSaleProducts[i].price, urlString: $viewModel.flashSaleProducts[i].image_url)
+                                    }
+                                
+                                }
+                                .padding(.leading)
+                                .padding(.trailing)
+                                //ZStack
+                            }
+                        }
+                        
+                        BrandsView()
                     }
-                    
-                    BrandsView()
+                    .task {
+                        await viewModel.fetchData()
+                    }
 
                 }
                 .padding(.bottom, 80)
-            }
-            .task {
-                await viewModel.fetchData()
             }
         }
     }
@@ -124,20 +126,20 @@ struct HomeNavBar: View {
             })
             .padding(.bottom)
             
-            Spacer()
             
-            HStack {
-                Text("Trade by")
-                    .font(.custom("Montserrat-Bold", size: 24))
-                + Text (" bata")
-                    .font(.custom("Montserrat-Bold", size: 24))
-                .foregroundColor(.blue)
+            VStack {
+                HStack {
+                    Text("Trade by")
+                        .font(.custom("Montserrat-Bold", size: 24))
+                    + Text (" bata")
+                        .font(.custom("Montserrat-Bold", size: 24))
+                    .foregroundColor(.blue)
+                }
+                .padding(.bottom)
+                .padding(.leading, 22)
+                .frame(maxWidth: .infinity)
             }
-            .padding(.bottom)
-                
             
-            
-            Spacer()
             
             VStack {
                 Image(systemName: "person")
@@ -163,6 +165,7 @@ struct HomeNavBar: View {
                     }
                 })
             }
+            
         }
         .padding(.horizontal)
     }
@@ -245,15 +248,17 @@ struct LatestItem: View {
         
         ZStack {
             
-            ZStack {
+            VStack {
                 KFImage(URL(string: urlString))
                     .resizable()
-                Image("gradient")
-                    .resizable()
+                    .scaledToFill()
+                    .frame(minWidth: 130.0,  minHeight: 175.0, maxHeight: 175.0)
+                    .contentShape(Rectangle())
             }
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 130, height: 175)
             
+            Image("gradient")
+                .resizable()
+
             VStack {
                 
                 Spacer()
@@ -292,7 +297,7 @@ struct LatestItem: View {
                             .frame(width: 25, height: 25)
                         
                         Button(action: {
-                            
+                            print("tapped")
                         }, label: {
                             Image("plus")
                                 .resizable()
@@ -302,12 +307,15 @@ struct LatestItem: View {
                     .padding(.bottom, 7)
                 }
             }
+            .frame(width: 116)
             .padding(.horizontal, 7)
         }
-        .frame(width: 130, height: 175)
+        .background(.red)
+        .frame(maxWidth: 130, maxHeight: 175)
         .cornerRadius(10)
     }
 }
+
 
 // Flash Sale
 struct FlashSaleItem: View {
@@ -318,10 +326,12 @@ struct FlashSaleItem: View {
     @Binding var urlString: String
     var body: some View {
         ZStack {
-            
             ZStack {
                 KFImage(URL(string: urlString))
                     .resizable()
+                    .scaledToFill()
+                    .contentShape(Rectangle())
+                
                 Image("gradient")
                     .resizable()
             }
@@ -333,7 +343,7 @@ struct FlashSaleItem: View {
                 HStack {
                     Text("\(discount)% off")
                         .font(.custom("Montserrat-SemiBold", size: 13))
-                        .padding(.horizontal, 7)
+                        .padding(.horizontal, 9)
                         .padding(.vertical, 4)
                         .foregroundColor(.white)
                         .background(Color(hex: "F93A3A"))
@@ -430,6 +440,7 @@ struct BrandItemView: View {
                     .aspectRatio(contentMode: .fill)
             }
             .background(Color(hex: "E5E9EF"))
+
             
             VStack {
                 Spacer()

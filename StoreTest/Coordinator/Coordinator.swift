@@ -45,6 +45,10 @@ class Coordinator: ObservableObject {
         path.removeLast(path.count)
     }
     
+    func fullScreenCoverDismiss() {
+        self.fullScreenCover = nil
+    }
+    
     @ViewBuilder
     func build(page: Page) -> some View {
         switch page {

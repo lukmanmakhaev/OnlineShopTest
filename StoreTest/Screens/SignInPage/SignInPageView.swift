@@ -21,14 +21,14 @@ struct SignInPageView: View {
     
     var body: some View {
    
-        ZStack {
+        ScrollView (showsIndicators: false) {
             VStack {
   
                 Text("Sign In")
                     .font(.custom("Montserrat-Medium", size: 25))
                     .font(.title)
                     .fontWeight(.bold)
-                    .padding(.top, 125)
+                    .padding(.top, 75)
                 
                 TextField("First name", text: $viewModel.firstName)
                     .multilineTextAlignment(.center)
@@ -64,7 +64,10 @@ struct SignInPageView: View {
                 }
                 
                 Button(action: {
-                    
+                    if viewModel.isExisting(value: $viewModel.email.wrappedValue, in: viewModel.users.users)! {
+                    } else {
+                        print("you can create this user")
+                    }
                 }) {
                     
                     HStack {
@@ -129,7 +132,7 @@ struct SignInPageView: View {
                     .font(.custom("Montserrat-Medium", size: 16))
                 }
                 .padding(.top, 38)
-                .padding(.bottom, 133)
+                .padding(.bottom, 30)
                 Spacer()
             }
             .padding()

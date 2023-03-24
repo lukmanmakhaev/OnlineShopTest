@@ -10,7 +10,7 @@ import SwiftUI
 enum Tab: String, CaseIterable {
     case Home
     case Favorites
-    case Cart
+    case cart
     case Messages
     case Profile
 }
@@ -29,6 +29,8 @@ struct TabBar: View {
     var body: some View {
         
         
+        
+        
         ZStack {
             
             TabView(selection: $currentTab) {
@@ -40,7 +42,7 @@ struct TabBar: View {
                     .tag(Tab.Favorites)
                 
                 CartPageView()
-                    .tag(Tab.Cart)
+                    .tag(Tab.cart)
                 
                 MessagesPageView()
                     .tag(Tab.Messages)

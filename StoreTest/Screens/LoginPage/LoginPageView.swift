@@ -18,7 +18,7 @@ struct LoginPageView: View {
     @State var isSecure: Bool = true
     
     var body: some View {
-        ZStack {
+        ScrollView (showsIndicators: false) {
             VStack {
                 
                 Text("Welcome back")
@@ -35,10 +35,17 @@ struct LoginPageView: View {
                     .padding(.top, 78)
                     .font(.custom("Montserrat-Medium", size: 16))
                 
+                HStack {
+                    Text(viewModel.firstNameError)
+                        .foregroundColor(Color.red)
+                        .font(.custom("Montserrat-Medium", size:12))
+                    Spacer()
+                    
+                }
+                
                 ZStack (alignment: .trailing) {
                     
-                    if isSecure {
-                        
+                    if isSecure { 
                         SecureField("Password",text: $viewModel.password)
                             .multilineTextAlignment(.center)
                             .frame(height: 40)
@@ -55,7 +62,7 @@ struct LoginPageView: View {
                             .cornerRadius(50)
                             .padding(.top, 35)
                     }
-                    
+
                     Button(action: { isSecure = !isSecure
                                 }, label: {
                                     Image(systemName: !isSecure ? LoginPageView.eyeSlashIcon : LoginPageView.eyeIcon)
@@ -64,8 +71,23 @@ struct LoginPageView: View {
                                 })
                     .padding(.top, 35)
                 }
+                
+                HStack {
+                    Text(viewModel.passwordError)
+                        .foregroundColor(Color.red)
+                        .font(.custom("Montserrat-Medium", size:12))
+                    Spacer()
+                }
     
                 Button(action: {
+                    //coordinator.present(fullScreenCover: .contentView)
+                    
+                    viewModel.checkPassword()
+                    viewModel.checkFirstName()
+                    
+                    if viewModel.passwordError == "" && viewModel.firstNameError == "" {
+                        coordinator.present(fullScreenCover: .contentView)
+                    }
                     
                 }) {
                     
@@ -80,6 +102,7 @@ struct LoginPageView: View {
                     .cornerRadius(20.0)
                 }
                 .padding(.top, 100)
+                //.disabled($viewModel.isDisabled.wrappedValue)
                 
                 HStack {
                     Text("Dont have an account?")
@@ -101,8 +124,11 @@ struct LoginPageView: View {
             }
         }
         .padding()
+        .navigationBarHidden(true)
     }
+    
 }
+
 
 struct LoginPageView_Previews: PreviewProvider {
     static var previews: some View {
